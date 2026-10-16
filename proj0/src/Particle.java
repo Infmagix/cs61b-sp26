@@ -42,6 +42,11 @@ public class Particle {
     }
 
     public void fall(Map<Direction, Particle> neighbors) {
+        Particle particle_down = neighbors.get(Direction.DOWN);
+        // Assume that none of neighbors are null.
+        if (particle_down.flavor == ParticleFlavor.EMPTY) {
+            moveInto(particle_down);
+        }
     }
 
     public void flow(Map<Direction, Particle> neighbors) {

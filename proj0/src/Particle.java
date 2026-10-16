@@ -17,7 +17,10 @@ public class Particle {
 
     public Particle(ParticleFlavor flavor) {
         this.flavor = flavor;
-        lifespan = -1;
+        lifespan = switch (flavor) {
+            case PLANT, FLOWER, FIRE -> LIFESPANS.get(flavor);
+            default -> -1;
+        };
     }
 
     public Color color() {
@@ -31,6 +34,16 @@ public class Particle {
             case FIRE -> new Color(255, 0, 0);
             case FLOWER -> new Color(255, 141, 161);
         };
+    }
+
+    public void decrementLifespan() {
+        if (lifespan > 0) {
+            lifespan--;
+        }
+        if (lifespan == 0) {
+            flavor = ParticleFlavor.EMPTY;
+            lifespan = -1;
+        }
     }
 
     public void moveInto(Particle other) {

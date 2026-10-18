@@ -77,55 +77,57 @@ public class Particle {
     }
 
     public void flow(Map<Direction, Particle> neighbors) {
-        int number = StdRandom.uniformInt(3);
-        switch (number) {
+        Particle particle;
+
+        switch (StdRandom.uniformInt(3)) {
             case 0:
+                particle = neighbors.get(Direction.LEFT);
                 break;
             case 1:
-                Particle particle_left = neighbors.get(Direction.LEFT);
-                if (particle_left.flavor == ParticleFlavor.EMPTY) {
-                    moveInto(particle_left);
-                }
+                particle = neighbors.get(Direction.RIGHT);
                 break;
-            case 2:
-                Particle particle_right = neighbors.get(Direction.RIGHT);
-                if (particle_right.flavor == ParticleFlavor.EMPTY) {
-                    moveInto(particle_right);
-                }
-                break;
+            default:
+                return;
+        }
+
+        if (particle.flavor == ParticleFlavor.EMPTY) {
+            moveInto(particle);
         }
     }
 
     public void grow(Map<Direction, Particle> neighbors) {
-        int number = StdRandom.uniformInt(10);
-        switch (number) {
+        Particle particle;
+
+        switch (StdRandom.uniformInt(10)) {
             case 0:
-                Particle particle_up = neighbors.get(Direction.UP);
-                if (particle_up.flavor == ParticleFlavor.EMPTY) {
-                    particle_up.flavor = flavor;
-                    particle_up.lifespan = LIFESPANS.get(flavor);
-                }
+                particle = neighbors.get(Direction.UP);
                 break;
             case 1:
-                Particle particle_left = neighbors.get(Direction.LEFT);
-                if (particle_left.flavor == ParticleFlavor.EMPTY) {
-                    particle_left.flavor = flavor;
-                    particle_left.lifespan = LIFESPANS.get(flavor);
-                }
+                particle = neighbors.get(Direction.LEFT);
                 break;
             case 2:
-                Particle particle_right = neighbors.get(Direction.RIGHT);
-                if (particle_right.flavor == ParticleFlavor.EMPTY) {
-                    particle_right.flavor = flavor;
-                    particle_right.lifespan = LIFESPANS.get(flavor);
-                }
+                particle = neighbors.get(Direction.RIGHT);
                 break;
             default:
-                break;
+                return;
+        }
+
+        if (particle.flavor == ParticleFlavor.EMPTY) {
+            particle.flavor = flavor;
+            particle.lifespan = LIFESPANS.get(flavor);
         }
     }
 
     public void burn(Map<Direction, Particle> neighbors) {
+        for (Direction dir : Direction.values()) {
+            Particle neighbor = neighbors.get(dir);
+            if (neighbor.flavor == ParticleFlavor.PLANT || neighbor.flavor == ParticleFlavor.FLOWER) {
+                if (StdRandom.uniformInt(10) < 4) {
+                    neighbor.flavor = ParticleFlavor.FIRE;
+                    neighbor.lifespan = FIRE_LIFESPAN;
+                }
+            }
+        }
     }
 
     public void action(Map<Direction, Particle> neighbors) {
@@ -137,5 +139,7 @@ public class Particle {
             flow(neighbors);
         if (flavor == ParticleFlavor.PLANT || flavor == ParticleFlavor.FLOWER)
             grow(neighbors);
+        if (flavor == ParticleFlavor.FIRE)
+            burn(neighbors);
     }
 }

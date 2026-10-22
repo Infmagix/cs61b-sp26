@@ -12,7 +12,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     private int size;
 
     public LinkedListDeque61B() {
-        sentinel = new Node();
+        sentinel = new Node<>();
         sentinel.prev = sentinel;
         sentinel.next = sentinel;
         size = 0;
@@ -25,13 +25,15 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public void addFirst(T x) {
-        Node<T> p = new Node();
+        Node<T> p = new Node<>();
         p.item = x;
         p.prev = sentinel;
         p.next = sentinel.next;
 
         sentinel.next.prev = p;
         sentinel.next = p;
+
+        size++;
     }
 
     /**
@@ -41,13 +43,15 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public void addLast(T x) {
-        Node<T> p = new Node();
+        Node<T> p = new Node<>();
         p.item = x;
         p.prev = sentinel.prev;
         p.next = sentinel;
 
         sentinel.prev.next = p;
         sentinel.prev = p;
+
+        size++;
     }
 
     /**
@@ -74,9 +78,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      * @return {@code true} if the deque has no elements, {@code false} otherwise.
      */
     @Override
-    public boolean isEmpty() {
-        return sentinel.next == sentinel;
-    }
+    public boolean isEmpty() { return size == 0; }
 
     /**
      * Returns the size of the deque. Does not alter the deque.
@@ -85,7 +87,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     /**

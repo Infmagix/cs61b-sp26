@@ -97,7 +97,8 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public T getFirst() {
-        return null;
+        if (isEmpty()) return null;
+        return sentinel.next.item;
     }
 
     /**
@@ -107,7 +108,8 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public T getLast() {
-        return null;
+        if (isEmpty()) return null;
+        return sentinel.prev.item;
     }
 
     /**

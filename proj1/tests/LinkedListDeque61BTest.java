@@ -61,34 +61,29 @@ public class LinkedListDeque61BTest {
     @Test
     public void testIsEmpty() {
         Deque61B<Integer> lld = new LinkedListDeque61B<>();
-
         assertThat(lld.isEmpty()).isTrue();
 
         lld.addLast(0);   // [0]
         lld.addLast(1);   // [0, 1]
         lld.addFirst(-1); // [-1, 0, 1]
-
         assertThat(lld.isEmpty()).isFalse();
     }
 
     @Test
     public void testSize() {
         Deque61B<Integer> lld = new LinkedListDeque61B<>();
-
         assertThat(lld.size()).isEqualTo(0);
 
         lld.addLast(0);   // [0]
         lld.addLast(1);   // [0, 1]
         lld.addFirst(-1); // [-1, 0, 1]
-
         assertThat(lld.size()).isEqualTo(3);
     }
 
     @Test
     public void testGetFirst() {
-         Deque61B<Integer> lld = new LinkedListDeque61B<>();
-
-         assertThat(lld.getFirst()).isNull();
+        Deque61B<Integer> lld = new LinkedListDeque61B<>();
+        assertThat(lld.getFirst()).isNull();
 
         lld.addLast(0);   // [0]
         assertThat(lld.getFirst()).isEqualTo(0);
@@ -103,7 +98,6 @@ public class LinkedListDeque61BTest {
     @Test
     public void testGetLast() {
         Deque61B<Integer> lld = new LinkedListDeque61B<>();
-
         assertThat(lld.getLast()).isNull();
 
         lld.addLast(0);   // [0]
@@ -114,5 +108,27 @@ public class LinkedListDeque61BTest {
 
         lld.addFirst(-1); // [-1, 0, 1]
         assertThat(lld.getLast()).isEqualTo(1);
+    }
+
+    @Test
+    public void testGet() {
+        Deque61B<Integer> lld = new LinkedListDeque61B<>();
+        assertThat(lld.get(0)).isNull();
+
+        lld.addLast(0);   // [0]
+        assertThat(lld.get(0)).isEqualTo(0);
+        assertThat(lld.get(-1)).isNull();
+        assertThat(lld.get(10)).isNull();
+    }
+
+    @Test
+    public void testGetRecursive() {
+        Deque61B<Integer> lld = new LinkedListDeque61B<>();
+        assertThat(lld.getRecursive(0)).isNull();
+
+        lld.addLast(0);   // [0]
+        assertThat(lld.getRecursive(0)).isEqualTo(0);
+        assertThat(lld.getRecursive(-1)).isNull();
+        assertThat(lld.getRecursive(10)).isNull();
     }
 }

@@ -2,17 +2,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LinkedListDeque61B<T> implements Deque61B<T> {
-    private static class Node<T> {
+    private class Node {
         public T item;
-        public Node<T> prev;
-        public Node<T> next;
+        public Node prev;
+        public Node next;
     }
 
-    private Node<T> sentinel;
+    private Node sentinel;
     private int size;
 
     public LinkedListDeque61B() {
-        sentinel = new Node<>();
+        sentinel = new Node();
         sentinel.prev = sentinel;
         sentinel.next = sentinel;
         size = 0;
@@ -25,7 +25,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public void addFirst(T x) {
-        Node<T> p = new Node<>();
+        Node p = new Node();
         p.item = x;
         p.prev = sentinel;
         p.next = sentinel.next;
@@ -43,7 +43,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public void addLast(T x) {
-        Node<T> p = new Node<>();
+        Node p = new Node();
         p.item = x;
         p.prev = sentinel.prev;
         p.next = sentinel;
@@ -63,7 +63,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     public List<T> toList() {
         List<T> returnList = new ArrayList<>();
 
-        Node<T> p = sentinel.next;
+        Node p = sentinel.next;
         while (p != sentinel) {
             returnList.add(p.item);
             p = p.next;
@@ -121,7 +121,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     public T removeFirst() {
         if (isEmpty()) return null;
 
-        Node<T> head = sentinel.next;
+        Node head = sentinel.next;
         T returnItem = head.item;
 
         sentinel.next = head.next;
@@ -142,7 +142,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
     public T removeLast() {
         if (isEmpty()) return null;
 
-        Node<T> tail = sentinel.prev;
+        Node tail = sentinel.prev;
         T returnItem = tail.item;
 
         sentinel.prev = tail.prev;
@@ -168,7 +168,7 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         if (0 > index || index >= size)
             return null;
 
-        Node<T> p = sentinel;
+        Node p = sentinel;
         while (index > 0) {
             p = p.next;
             index--;
@@ -192,11 +192,72 @@ public class LinkedListDeque61B<T> implements Deque61B<T> {
         return getRecursiveHelper(sentinel.next, index);
     }
 
-    private T getRecursiveHelper(Node<T> p, int index) {
+    private T getRecursiveHelper(Node p, int index) {
         if (0 == index)
             return p.item;
 
         return getRecursiveHelper(p.next, index - 1);
+    }
+
+    /*
+     * =================================================================
+     * 04. DLLists, Default Methods, ALists: Discussion
+     * =================================================================
+     */
+
+    /** Rotates the Deque left by x places. Assume x is non-negative.
+     *  Example: [3, 6, 9, 12, 15, 18].rotateLeft(4) yields [15, 18, 3, 6, 9, 12].
+     */
+    public void rotateLeft(int x) {
+        // part c: Do not call any other methods. Each rotation
+        // operation should set six pointers.
+        // note: this implementation must have either if (size <= 1)
+        // OR must mode x by size, otherwise there is a subtle bug.
+//        if (size <= 1) {
+//            return;
+//        }
+
+//        for (int i = 0; i < x; i++) {
+//            Node oldLast = sentinel.prev;
+//            Node oldFirst = sentinel.next;
+//            Node oldSecond = oldFirst.next;
+//
+//            sentinel.next = oldSecond;
+//            oldSecond.prev = sentinel;
+//
+//            oldFirst.next = sentinel;
+//            oldFirst.prev = oldLast;
+//
+//            sentinel.prev = oldFirst;
+//            oldLast.next = oldFirst;
+//        }
+
+//        Node p = sentinel.next;
+//        while (x-- > 0) {
+//            p = p.next;
+//        }
+//
+//        Node oldHead = sentinel.next;
+//        Node oldTail = sentinel.prev;
+//
+//        sentinel.next = p;
+//        sentinel.prev = p.prev;
+//        p.prev.next = sentinel;
+//        p.prev = sentinel;
+//
+//        oldHead.prev = oldTail;
+//        oldTail.next = oldHead;
+
+        // part d: Rewrite this method in terms of other methods.
+        // note: we can also mod x by size for efficiency
+//        for (int i = 0; i < x % size; i++) {
+//            addLast(removeFirst());
+//        }
+
+        while (x > 0) {
+            addLast(removeFirst());
+            x--;
+        }
     }
 
     public static void main(String[] args) {

@@ -236,4 +236,25 @@ public class LinkedListDeque61BTest {
         assertThat(item).isEqualTo(-1);
         assertThat(lld.toList()).containsExactly();
     }
+
+    /*
+     * =================================================================
+     * 04. DLLists, Default Methods, ALists: Discussion
+     * =================================================================
+     */
+
+    @Test
+    public void testRotateLeft() {
+        LinkedListDeque61B<Integer> lld = new LinkedListDeque61B<>();
+
+        lld.addLast(3);
+//        lld.addLast(6);
+//        lld.addLast(9);
+//        lld.addLast(12);
+//        lld.addLast(15);
+//        lld.addLast(18); // [3, 6, 9, 12, 15, 18]
+        lld.rotateLeft(4); // [15, 18, 3, 6, 9, 12]
+
+        assertThat(lld.toList()).containsExactly(3).inOrder();
+    }
 }

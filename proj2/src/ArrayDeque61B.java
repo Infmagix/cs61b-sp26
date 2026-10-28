@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayDeque61B<T> implements Deque61B<T> {
@@ -10,7 +11,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         items = (T[]) new Object[8];
         size = 0;
         nextFirst = 0;
-        nextLast = 0;
+        nextLast = 1;
     }
 
     /**
@@ -20,7 +21,15 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public void addFirst(T x) {
+        // full array triggers resizing
+        if (size == capacity()) {
+            resize();
+        }
 
+        items[nextFirst] = x;
+
+        nextFirst = indexMod(nextFirst - 1);
+        size++;
     }
 
     /**
@@ -30,7 +39,33 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public void addLast(T x) {
+        if (size == capacity()) {
+            resize();
+        }
+        
+        items[nextLast] = x;
 
+        nextLast = indexMod(nextLast + 1);
+        size++;
+    }
+
+    private int capacity() {
+        return items.length;
+    }
+
+    private void resize() {
+        int currCap = capacity();
+        T[] resized = (T[]) new Object[currCap * 2];
+
+        int first = indexMod(nextFirst + 1);
+        for (int i = 0; i < currCap; i++) {
+            resized[i] = items[first];
+            first = indexMod(first + 1);
+        }
+
+        items = resized;
+        nextFirst = capacity() - 1;
+        nextLast = currCap;
     }
 
     /**
@@ -40,7 +75,21 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public List<T> toList() {
-        return List.of();
+        List<T> returnList = new ArrayList<>();
+
+        if (size > 0) {
+            int first = indexMod(nextFirst + 1);
+            for (int i = 0; i < size; i++) {
+                returnList.add(items[first]);
+                first = indexMod(first + 1);
+            }
+        }
+
+        return returnList;
+    }
+
+    private int indexMod(int index) {
+        return (index + capacity()) % capacity();
     }
 
     /**

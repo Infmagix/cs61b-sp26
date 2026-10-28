@@ -23,7 +23,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
     public void addFirst(T x) {
         // full array triggers resizing
         if (size == capacity()) {
-            resize();
+            resizeUp();
         }
 
         items[nextFirst] = x;
@@ -40,7 +40,7 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
     @Override
     public void addLast(T x) {
         if (size == capacity()) {
-            resize();
+            resizeUp();
         }
         
         items[nextLast] = x;
@@ -53,7 +53,9 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         return items.length;
     }
 
-    private void resize() {
+    /** Double backing array size to have enough space to
+     *  add the next element. */
+    private void resizeUp() {
         int currCap = capacity();
         T[] resized = (T[]) new Object[currCap * 2];
 

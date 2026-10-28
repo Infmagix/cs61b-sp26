@@ -123,6 +123,26 @@ public class ArrayDeque61BTest {
         lld.addLast(6); // [23, 22, 24, 1, 2, 3, 4, 5, 6]
 
         assertThat(lld.size()).isEqualTo(9);
+
+        // remove to one or two elements in the deque
+        lld.removeFirst();
+        lld.removeFirst();
+        lld.removeFirst();
+        lld.removeFirst();
+        lld.removeLast();
+        lld.removeLast();
+        lld.removeLast();
+
+        assertThat(lld.size()).isEqualTo(2);
+
+        lld.removeLast();
+        assertThat(lld.size()).isEqualTo(1);
+
+        lld.removeLast();
+        assertThat(lld.size()).isEqualTo(0);
+
+        lld.removeLast(); // remove on an empty deque
+        assertThat(lld.size()).isEqualTo(0);
     }
 
     @Test
@@ -226,7 +246,7 @@ public class ArrayDeque61BTest {
 
     @Test
     public void testRemoveLast() {
-        Deque61B<Integer> lld = new ArrayDeque61B<>();
+        ArrayDeque61B<Integer> lld = new ArrayDeque61B<>();
 
         // empty deque
         assertThat(lld.removeLast()).isNull();
@@ -240,5 +260,27 @@ public class ArrayDeque61BTest {
         assertThat(lld.removeLast()).isEqualTo(22); // [23]
         assertThat(lld.removeLast()).isEqualTo(23); // []
         assertThat(lld.removeLast()).isNull(); // []
+
+        // test for resizing down
+        for (int i = 0; i < 10000; i++) {
+            lld.addLast(i);
+        }
+        assertThat(lld.getUsageFactor()).isGreaterThan(0.25);
+
+        // array length 16 or more
+        for (int i = 0; i < 9900; i++) {
+            lld.removeLast();
+        }
+        assertThat(lld.getUsageFactor()).isEqualTo(0.25);
+
+        for (int i = 0; i < 84; i++) {
+            lld.removeLast();
+        }
+        assertThat(lld.getUsageFactor()).isEqualTo(0.25);
+
+        for (int i = 0; i < 15; i++) {
+            lld.removeLast();
+        }
+        assertThat(lld.getUsageFactor()).isLessThan(0.25);
     }
 }

@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ArrayDeque61B<T> implements Deque61B<T> {
+    private static final int RESIZE_UP_FACTOR = 2;
+    private static final double RESIZE_DOWN_FACTOR = 0.25;
+
     private T[] items;
     private int size;
     private int nextFirst;
@@ -53,11 +56,12 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         return items.length;
     }
 
-    /** Double backing array size to have enough space to
-     *  add the next element. */
+    /**
+     * Double backing array size to have enough space to add the next element.
+     */
     private void resizeUp() {
         int currCap = capacity();
-        T[] resized = (T[]) new Object[currCap * 2];
+        T[] resized = (T[]) new Object[currCap * RESIZE_UP_FACTOR];
 
         int first = indexMod(nextFirst + 1);
         for (int i = 0; i < currCap; i++) {
@@ -68,6 +72,34 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         items = resized;
         nextFirst = capacity() - 1;
         nextLast = currCap;
+    }
+
+    /**
+     * For arrays of length 16 or more, the usage factor should always be at least 25%.
+     * For array length 15 or less, the usage factor can be arbitrarily low.
+     * DO NOT recommend using {@code arraycopy} with a circular implementation.
+     */
+    private void resizeDown() {
+        if (capacity() < 16) {
+            return;
+        }
+
+        if (getUsageFactor() < RESIZE_DOWN_FACTOR) {
+            int cap = size * 4;
+            int newCap = (cap > 15) ? cap : 15;
+
+            T[] resized = (T[]) new Object[newCap];
+
+            int first = indexMod(nextFirst + 1);
+            for (int i = 0; i < size; i++) {
+                resized[i] = items[first];
+                first = indexMod(first + 1);
+            }
+
+            items = resized;
+            nextFirst = capacity() - 1;
+            nextLast = size + 1;
+        }
     }
 
     /**
@@ -157,6 +189,9 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
 
         size--;
 
+        // resize down if needed
+        resizeDown();
+
         return returnItem;
     }
 
@@ -174,6 +209,11 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
         nextLast = indexMod(nextLast - 1);
         T returnItem = items[nextLast];
         items[nextLast] = null;
+
+        size--;
+
+        // resize down if needed
+        resizeDown();
 
         return returnItem;
     }
@@ -206,5 +246,14 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
     @Override
     public T getRecursive(int index) {
         throw new UnsupportedOperationException("No need to implement getRecursive for ArrayDeque61B");
+    }
+
+    /**
+     * Return the Usage factor of memory space of the backing array.
+     *
+     * @return the ratio of {@code size} and {@code capacity}
+     */
+    public double getUsageFactor() {
+        return (double) size / capacity();
     }
 }

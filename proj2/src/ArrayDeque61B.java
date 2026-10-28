@@ -145,7 +145,17 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public T removeFirst() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        nextFirst = indexMod(nextFirst + 1);
+        T returnItem = items[nextFirst];
+        items[nextFirst] = null; // Null out references that are no longer in the deque.
+
+        size--;
+
+        return returnItem;
     }
 
     /**
@@ -155,7 +165,15 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public T removeLast() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        nextLast = indexMod(nextLast - 1);
+        T returnItem = items[nextLast];
+        items[nextLast] = null;
+
+        return returnItem;
     }
 
     /**

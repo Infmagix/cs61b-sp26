@@ -205,4 +205,40 @@ public class ArrayDeque61BTest {
         assertThat(lld.get(-1)).isNull(); // negative index
         assertThat(lld.get(20)).isNull(); // larger index
     }
+
+    @Test
+    public void testRemoveFirst() {
+        Deque61B<Integer> lld = new ArrayDeque61B<>();
+
+        // empty deque
+        assertThat(lld.removeFirst()).isNull();
+
+        // valid deque
+        lld.addFirst(22); // [22]
+        lld.addFirst(23); // [23, 22]
+        lld.addLast(24);  // [23, 22, 24]
+
+        assertThat(lld.removeFirst()).isEqualTo(23); // [22, 24]
+        assertThat(lld.removeFirst()).isEqualTo(22); // [24]
+        assertThat(lld.removeFirst()).isEqualTo(24); // []
+        assertThat(lld.removeFirst()).isNull(); // []
+    }
+
+    @Test
+    public void testRemoveLast() {
+        Deque61B<Integer> lld = new ArrayDeque61B<>();
+
+        // empty deque
+        assertThat(lld.removeLast()).isNull();
+
+        // valid deque
+        lld.addFirst(22); // [22]
+        lld.addFirst(23); // [23, 22]
+        lld.addLast(24);  // [23, 22, 24]
+
+        assertThat(lld.removeLast()).isEqualTo(24); // [23, 22]
+        assertThat(lld.removeLast()).isEqualTo(22); // [23]
+        assertThat(lld.removeLast()).isEqualTo(23); // []
+        assertThat(lld.removeLast()).isNull(); // []
+    }
 }

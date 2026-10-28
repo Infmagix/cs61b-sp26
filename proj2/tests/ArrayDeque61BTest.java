@@ -1,6 +1,9 @@
 import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.Deque;
+
 import static com.google.common.truth.Truth.assertThat;
 
 public class ArrayDeque61BTest {
@@ -172,5 +175,34 @@ public class ArrayDeque61BTest {
         lld.addLast(6); // [23, 22, 24, 1, 2, 3, 4, 5, 6]
 
         assertThat(lld.getLast()).isEqualTo(6);
+    }
+
+    @Test
+    public void testGet() {
+        Deque61B<Integer> lld = new ArrayDeque61B<>();
+
+        // empty deque
+        assertThat(lld.get(0)).isNull();
+
+        // valid deque
+        lld.addFirst(22); // [22]
+        lld.addFirst(23); // [23, 22]
+
+        assertThat(lld.get(0)).isEqualTo(23);
+        assertThat(lld.get(-1)).isNull(); // negative index
+        assertThat(lld.get(2)).isNull(); // larger index
+
+        // after resizing
+        lld.addLast(24); // [23, 22, 24]
+        lld.addLast(1); // [23, 22, 24, 1]
+        lld.addLast(2); // [23, 22, 24, 1, 2]
+        lld.addLast(3); // [23, 22, 24, 1, 2, 3]
+        lld.addLast(4); // [23, 22, 24, 1, 2, 3, 4]
+        lld.addLast(5); // [23, 22, 24, 1, 2, 3, 4, 5]
+        lld.addLast(6); // [23, 22, 24, 1, 2, 3, 4, 5, 6]
+
+        assertThat(lld.get(8)).isEqualTo(6);
+        assertThat(lld.get(-1)).isNull(); // negative index
+        assertThat(lld.get(20)).isNull(); // larger index
     }
 }

@@ -119,7 +119,10 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public T getFirst() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        return items[indexMod(nextFirst + 1)];
     }
 
     /**
@@ -129,7 +132,10 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
      */
     @Override
     public T getLast() {
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+        return items[indexMod(nextLast - 1)];
     }
 
     /**

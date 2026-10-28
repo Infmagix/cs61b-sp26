@@ -121,4 +121,56 @@ public class ArrayDeque61BTest {
 
         assertThat(lld.size()).isEqualTo(9);
     }
+
+    @Test
+    public void testGetFirst() {
+        Deque61B<Integer> lld = new ArrayDeque61B<>();
+
+        // empty deque
+        assertThat(lld.getFirst()).isNull();
+
+        // valid deque
+        lld.addFirst(22); // [22]
+        assertThat(lld.getFirst()).isEqualTo(22);
+
+        lld.addFirst(23); // [23, 22]
+        assertThat(lld.getFirst()).isEqualTo(23);
+
+        // after resizing
+        lld.addLast(24); // [23, 22, 24]
+        lld.addLast(1); // [23, 22, 24, 1]
+        lld.addLast(2); // [23, 22, 24, 1, 2]
+        lld.addLast(3); // [23, 22, 24, 1, 2, 3]
+        lld.addLast(4); // [23, 22, 24, 1, 2, 3, 4]
+        lld.addLast(5); // [23, 22, 24, 1, 2, 3, 4, 5]
+        lld.addLast(6); // [23, 22, 24, 1, 2, 3, 4, 5, 6]
+
+        assertThat(lld.getFirst()).isEqualTo(23);
+    }
+
+    @Test
+    public void testGetLast() {
+        Deque61B<Integer> lld = new ArrayDeque61B<>();
+
+        // empty deque
+        assertThat(lld.getLast()).isNull();
+
+        // valid deque
+        lld.addFirst(22); // [22]
+        assertThat(lld.getLast()).isEqualTo(22);
+
+        lld.addFirst(23); // [23, 22]
+        assertThat(lld.getLast()).isEqualTo(22);
+
+        // after resizing
+        lld.addLast(24); // [23, 22, 24]
+        lld.addLast(1); // [23, 22, 24, 1]
+        lld.addLast(2); // [23, 22, 24, 1, 2]
+        lld.addLast(3); // [23, 22, 24, 1, 2, 3]
+        lld.addLast(4); // [23, 22, 24, 1, 2, 3, 4]
+        lld.addLast(5); // [23, 22, 24, 1, 2, 3, 4, 5]
+        lld.addLast(6); // [23, 22, 24, 1, 2, 3, 4, 5, 6]
+
+        assertThat(lld.getLast()).isEqualTo(6);
+    }
 }

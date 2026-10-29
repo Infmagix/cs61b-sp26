@@ -1,5 +1,10 @@
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 public class ArrayDeque61B<T> implements Deque61B<T> {
     private static final double RESIZE_DOWN_FACTOR = 0.25;
@@ -249,5 +254,59 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
      */
     private double getUsageFactor() {
         return (double) size / capacity();
+    }
+
+    public Iterator<T> iterator() {
+        return new ArrayDeque61BIterator();
+    }
+
+    private class ArrayDeque61BIterator implements Iterator<T> {
+
+        private int count; // number of elements iterated
+
+        public ArrayDeque61BIterator() {
+            count = 0;
+        }
+
+        /**
+         * Returns {@code true} if the iteration has more elements.
+         * (In other words, returns {@code true} if {@link #next} would
+         * return an element rather than throwing an exception.)
+         *
+         * @return {@code true} if the iteration has more elements
+         */
+        @Override
+        public boolean hasNext() {
+            return count < size;
+        }
+
+        /**
+         * Returns the next element in the iteration.
+         *
+         * @return the next element in the iteration
+         * @throws NoSuchElementException if the iteration has no more elements
+         */
+        @Override
+        public T next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException("the iteration has no more elements");
+            }
+
+            T returnItem = items[indexMod(nextFirst + 1 + count)];
+            count++;
+            return returnItem;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        Deque61B<String> ad = new ArrayDeque61B<>();
+
+        ad.addLast("front");
+        ad.addLast("middle");
+        ad.addLast("back");
+        for (String s : ad) {
+            System.out.println(s);
+        }
     }
 }

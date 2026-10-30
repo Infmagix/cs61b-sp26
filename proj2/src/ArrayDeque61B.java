@@ -1,9 +1,6 @@
 import org.checkerframework.checker.units.qual.A;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ArrayDeque61B<T> implements Deque61B<T> {
@@ -296,6 +293,28 @@ public class ArrayDeque61B<T> implements Deque61B<T> {
             count++;
             return returnItem;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        ArrayDeque61B<T> o = (ArrayDeque61B<T>) obj;
+        if (o.size() != this.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < this.size(); i++) {
+            if (!Objects.equals(o.get(i), this.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

@@ -106,4 +106,18 @@ public class ArrayDeque61BEnhancementTest {
 
         assertThat(ad).isEqualTo(ad2);
     }
+
+    @Test
+    public void testToStringDeque61B() {
+        Deque61B<String> ad = new ArrayDeque61B<>();
+
+        // to_string_empty: Check that toString works on an empty deque.
+        assertThat(ad.toString()).isEqualTo("[]");
+
+        // to_string_nonempty: Check that toString works on a non-empty deque.
+        ad.addLast("front");
+        ad.addLast("middle");
+        ad.addLast("back");
+        assertThat(ad.toString()).isEqualTo("[front, middle, back]");
+    }
 }

@@ -7,13 +7,15 @@ public class Percolation {
 
     private int gridSize;
     private WeightedQuickUnionUF uf;
+    private int vTopSite, vBotSite;
 
-    private State[][] cell;
+    private Cell[][] state;
 
-    private enum State {
+    private enum Cell {
         BLOCKED,    // blocked site
-        EMPTY,      // empty open site
-        FULL,       // full open site
+        OPEN,       // open site
+//        EMPTY,      // empty open site
+//        FULL,       // full open site
     }
 
     private int nOpenSites;
@@ -24,59 +26,71 @@ public class Percolation {
             throw new IllegalArgumentException("N must be greater than 0.");
         }
 
-        this.gridSize = N;
-        uf = new WeightedQuickUnionUF(N * N);
+        gridSize = N;
+        uf = new WeightedQuickUnionUF(N * N + 2);
+        vTopSite = N * N;       // open sites connected to it are full
+        vBotSite = N * N + 1;   // percolates when it is connected to vTopSite
 
-        cell = new State[N][N];
+        state = new Cell[N][N];
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
-                cell[i][j] = State.BLOCKED;
+                state[i][j] = Cell.BLOCKED;
 
         nOpenSites = 0;
     }
 
     public void open(int row, int col) {
         if (isOpen(row, col)) return;
+        state[row][col] = Cell.OPEN;
 
-        cell[row][col] = State.EMPTY;
-        if (row == 0) cell[row][col] = State.FULL;
+        int cIdx = toIndex(row, col);
+        if (row == 0) uf.union(cIdx, vTopSite);
+        if (row == gridSize - 1) uf.union(cIdx, vBotSite);
 
-        connect(row, col);
+        for (int i = 0; i < 4; i++) {
+            int nr = row + dx[i];
+            int nc = col + dy[i];
+            if (!check(nr, nc)) continue;
+            if (state[nr][nc] == Cell.BLOCKED) continue;
+
+            int nIdx = toIndex(nr, nc);
+            uf.union(cIdx, nIdx);
+
+            if (nr == 0) uf.union(nIdx, vTopSite);
+            if (nr == gridSize - 1) uf.union(nIdx, vBotSite);
+        }
+
         nOpenSites++;
     }
 
+    /** Check if the site (row, col) is open. */
     public boolean isOpen(int row, int col) {
         if (!check(row, col)) {
             throw new IndexOutOfBoundsException(
                 "The row " + row + " or column " + col + " index is not between 0 and " + (gridSize - 1));
         }
 
-        return cell[row][col] != State.BLOCKED;
+        return state[row][col] == Cell.OPEN;
     }
 
+    /** Check if the open site is connected to sites in the top row. */
     public boolean isFull(int row, int col) {
         if (!check(row, col)) {
             throw new IndexOutOfBoundsException(
                 "The row " + row + " or column " + col + " index is not between 0 and " + (gridSize - 1));
         }
 
-        return cell[row][col] == State.FULL;
+        return isOpen(row, col) && uf.connected(toIndex(row, col), vTopSite);
     }
 
     public int numberOfOpenSites() {
         return nOpenSites;
     }
 
+    /** Check if any open site in the bottom row is connected to sites in the top row. */
     public boolean percolates() {
-        for (int j = 0; j < gridSize; j++)
-            if (cell[gridSize - 1][j] == State.FULL)
-                return true;
-
-        return false;
+        return uf.connected(vTopSite, vBotSite);
     }
-
-    // TODO: Add any useful helper methods (we highly recommend this!).
-    // TODO: Remove all TODO comments before submitting.
 
     private boolean check(int row, int col) {
         return row >= 0 && row < gridSize && col >= 0 && col < gridSize;
@@ -84,31 +98,5 @@ public class Percolation {
 
     private int toIndex(int row, int col) {
         return row * gridSize + col;
-    }
-
-    private void connect(int row, int col) {
-        boolean isFullSite = (cell[row][col] == State.FULL);
-
-        int cIdx = toIndex(row, col);
-        for (int i = 0; i < 4; i++) {
-            int nr = row + dx[i];
-            int nc = col + dy[i];
-            if (!check(nr, nc)) continue;
-            if (cell[nr][nc] == State.BLOCKED) continue;
-
-            int nIdx = toIndex(nr, nc);
-            uf.union(cIdx, nIdx);
-
-            if (!isFullSite)
-                isFullSite = (cell[nr][nc] == State.FULL);
-        }
-
-        if (isFullSite) {
-            int root = uf.find(cIdx);
-            for (int i = 0; i < gridSize; i++)
-                for (int j = 0; j < gridSize; j++)
-                    if (uf.find(toIndex(i, j)) == root)
-                        cell[i][j] = State.FULL;
-        }
     }
 }
